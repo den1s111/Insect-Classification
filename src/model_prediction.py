@@ -43,16 +43,17 @@ def make_predictions(df, model):
     return predictions
 
 def save_predictions(predictions, predictions_file):
-    try:
-        # Convert to list before saving
-        predictions_list = predictions.tolist()
+    # Convert predictions (numpy array) to the required dictionary format
+    predictions_dict = {
+        "target": {i+1: int(pred) for i, pred in enumerate(predictions)}
+    }
+    
+    # Save as JSON
+    with open(predictions_file, "w") as f:
+        json.dump(predictions_dict, f, indent=4)
 
-        # Save as JSON
-        with open(predictions_file, "w") as f:
-            json.dump(predictions_list, f)
-        print(f"Predictions saved successfully to {predictions_file}")
-    except Exception as e:
-        print(f"Error saving predictions: {e}")
+    print(f"Predictions saved successfully to {predictions_file}")
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Prediction script for Energy Forecasting Hackathon')
